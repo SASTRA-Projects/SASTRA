@@ -1,34 +1,67 @@
 {% extends "layout.html" %}
 
 {% block head %}
-	<meta name="description"
+  <meta name="description"
           content="Shows faculty details.
                    Displays the personal information of the authenticated (logged-in) faculty.">
+    <style>
+        .faculty-card {
+            max-width: 800px;  /* increased from 600px */
+            margin: 60px auto;
+            background: linear-gradient(to right, #f8f9fa, #ffffff);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+            border-radius: 16px;
+            padding: 40px;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            color: #333;
+        }
+
+        .faculty-card h3 {
+            margin-top: 14px;  /* reduced from 20px */
+            margin-bottom: 3px; /* reduced from 5px */
+            font-size: 1.2em;
+            color: #2c3e50;
+        }
+
+        .faculty-card p {
+            font-size: 1.05em;
+            margin: 0 0 6px;  /* reduced from 10px */
+            color: #555;
+        }
+
+        .empty-message {
+            margin: 100px auto;
+            text-align: center;
+            font-size: 3em;
+            color: #b22222;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+    </style>
 {% endblock %}
 
 {% block title %}Faculty Details{% endblock %}
 
 {% block content %}
     {% if not faculty %}
-        <p style="margin: auto; text-align: center; font-size: 4em">Faculty ID Not Provided!</p>
+        <p class="empty-message">Faculty ID Not Provided!</p>
     {% else %}
-        <div>
-            <h3>Name: </h3>
+        <div class="faculty-card">
+            <h3>Name:</h3>
             <p>{{ faculty["name"] }}</p>
 
-            <h3>Phone Number: </h3>
+            <h3>Phone Number:</h3>
             <p>{{ faculty["phone"] }}</p>
 
-            <h3>Campus: </h3>
+            <h3>Campus:</h3>
             <p>{{ campus }}</p>
 
-            <h3>Department: </h3>
+            <h3>Department:</h3>
             <p>{{ faculty["department"] }}</p>
 
-            <h3>Date of join: </h3>
+            <h3>Date of Join:</h3>
             <p>{{ faculty["join_year"] }}</p>
 
-            <h3>Salary: </h3>
+            <h3>Salary:</h3>
             <p>{{ faculty["salary"] }}</p>
         </div>
     {% endif %}

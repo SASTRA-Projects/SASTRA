@@ -4,6 +4,31 @@
 {% block head %}
     <meta name="description"
           content="Welcome to the home page! Shows Campuses, Departments, Degrees, and Faculty Details.">
+    <style>
+        .lux-button {
+            padding: 1rem 2rem;
+            font-size: 1.2rem;
+            min-width: 260px;
+            text-align: center;
+            background: linear-gradient(to right, #e0eafc, #cfdef3);
+            border: none;
+            border-radius: 12px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+            transition: all 0.3s ease;
+            cursor: pointer;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        .lux-button:hover {
+            background: linear-gradient(to right, #dbe6f6, #a8c0ff);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .lux-button:active {
+            transform: scale(0.98);
+        }
+    </style>
 {% endblock %}
 
 {% block title %}Home{% endblock %}
@@ -13,19 +38,23 @@
 
     <div style="display: flex; flex-direction: column; align-items: center; gap: 1rem;">
         <form action="/campus">
-            <button type="submit" style="padding: 1rem 2rem; font-size: 1.2rem;">Campuses</button>
+            <button type="submit" class="lux-button">Campuses</button>
         </form>
 
         <form action="/department">
-            <button type="submit" style="padding: 1rem 2rem; font-size: 1.2rem;">Departments</button>
+            <button type="submit" class="lux-button">Departments</button>
         </form>
 
         <form action="/degree">
-            <button type="submit" style="padding: 1rem 2rem; font-size: 1.2rem;">Degrees</button>
+            <button type="submit" class="lux-button">Degrees</button>
         </form>
 
         <form action="/faculty">
-            <button type="submit" style="padding: 1rem 2rem; font-size: 1.2rem;">Faculty Details</button>
+            <button type="submit" class="lux-button">Faculty Details</button>
+        </form>
+
+        <form action="/generate_timetable">
+            <button type="submit" class="lux-button">Generate Timetable</button>
         </form>
     </div>
 
