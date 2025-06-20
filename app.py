@@ -107,8 +107,8 @@ def show_buildings(campus: str, school: str) -> str:
 		return render_template("building.html", buildings=show_data.get_buildings(sql.cursor, school_id=school_id), school=school)
 	return render_template("failed.html", reason="Unknown error occurred")
 
-@app.route("/department")
-def show_departments() -> str:
+#@app.route("/department")
+#def show_departments() -> str:
 	if sql.cursor:
 		return render_template("department.html", departments=show_data.get_departments(sql.cursor))
 	return render_template("failed.html", reason="Unknown error occurred")
@@ -131,6 +131,14 @@ def show_degree_programmes(degree: str) -> str:
 		programmes: Tuple[Optional[Dict[str, str]], ...] = show_data.get_programmes(sql.cursor, degree=degree)
 		return render_template("programme.html", programmes=programmes, degree=degree)
 	return render_template("failed.html", reason="Unknown error occurred")
+
+@app.route("/programme/<string:degree>/<string:stream>/<int:programme_id>")
+def show_programme_courses(degree: str, stream: str, programme_id: int):
+    if not sql.cursor:
+        return render_template("failed.html", reason="Unknown error occurred")
+    programme = show_data.get_programme(sql.cursor, programme_id=programme_id)
+    courses = fetch_data.get_courses_by_programme(sql.cursor, programme_id=programme_id)
+    return render_template("course.html", programme=f"{degree} - {stream}", courses=courses)
 
 @app.route("/faculty/details")
 def faculty_details() -> str:

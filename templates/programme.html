@@ -1,7 +1,7 @@
 {% extends "layout.html" %}
 
 {% block head %}
-	<meta name="description"
+  <meta name="description"
           content="Shows all the Programmes (from all campuses).
                    Click any Programme name to display more info about it.">
 {% endblock %}
@@ -9,31 +9,36 @@
 {% block title %}SASTRA Programmes{% endblock %}
 
 {% block content %}
-	{% if not programmes %}
-		<p style="margin: auto; text-align: center; font-size: 3em">
-			{% if degree %}
-				Programmes
-				<hr>
-				<ul class="nobulletins">
-					<li style="text-align: center; font-size: 3em">
-						<a href="/programme/{{ degree }}" class="nounderline">{{ degree }}</a>
-					</li>
-				</ul>
-			{% else %}
-				<span style="font-size: 4em;">Programmes Found!!</span>
-			{% endif %}
-		</p>
-	{% else %}
-		<p style="margin: auto; text-align: center; font-size: 3em">Programmes
-			{% if degree %} ({{ degree }}) {% endif %}
-		</p>
-		<ul class="nobulletins">
-			{% for programme in programmes %}
-				<hr>
-				<li style="text-align: center; font-size: 3em">
-					<a href="/programme/{{ programme.stream}}" class="nounderline">{{ programme["stream"] }}</a>
-				</li>
-			{% endfor %}
-		</ul>
-	{% endif %}
+  {% if not programmes %}
+    <p style="margin: auto; text-align: center; font-size: 3em">
+      {% if degree %}
+        Programmes
+        <hr>
+        <ul class="nobulletins">
+          <li style="text-align: center; font-size: 3em">
+            <a href="/programme/{{ degree }}" class="nounderline">{{ degree }}</a>
+          </li>
+        </ul>
+      {% else %}
+        <span style="font-size: 4em;">Programmes Found!!</span>
+      {% endif %}
+    </p>
+  {% else %}
+    <p style="margin: auto; text-align: center; font-size: 3em">Programmes
+      {% if degree %} ({{ degree }}) {% endif %}
+    </p>
+    <ul class="nobulletins">
+      {% for programme in programmes %}
+        <hr>
+        <li style="text-align: center; font-size: 3em">
+          <a href="{{ url_for('show_programme_courses',
+              degree=degree,
+              stream=programme.stream,
+              programme_id=programme.id) }}" class="lux-button-link">
+              {{ programme.stream }}
+          </a>
+        </li>
+      {% endfor %}
+    </ul>
+  {% endif %}
 {% endblock %}

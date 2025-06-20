@@ -96,3 +96,18 @@ def add_timetable(db_connector: Connection,
 				   VALUES (%s, %s, %s, %s)""",
 				   (day, period_id, faculty_section_course_id, class_id))
 	db_connector.commit()
+
+def insert_sample_english_courses(db_connector: Connection,
+                                  cursor: Cursor, /, *,
+                                  programme_id: int) -> None:
+    insert_course(db_connector, cursor,
+                  name="Introduction to Literature",
+                  code="ENG101",
+                  l=3, t=1, p=0, credit=4,
+                  programme_id=programme_id)
+
+    insert_course(db_connector, cursor,
+                  name="Shakespearean Drama",
+                  code="ENG102",
+                  l=3, t=0, p=2, credit=5,
+                  programme_id=programme_id)
