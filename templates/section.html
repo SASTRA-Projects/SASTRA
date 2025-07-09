@@ -1,0 +1,56 @@
+{% extends "layout.html" %}
+
+{% block head %}
+    <meta name="description" content="Displays all sections under a selected degree, stream, year, and campus.">
+    <style>
+        .button-link {
+            display: inline-block;
+            width: 322px;
+            height: 122px;
+            line-height: 122px;
+            text-align: center;
+            font-size: 1.5rem;
+            text-decoration: none;
+            background-color: var(--menu-footer-bg-dark);
+            color: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 10px rgba(26, 145, 197, 0.5);
+            transition: all 0.3s ease;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 10px;
+        }
+
+        .button-link:hover {
+            background-color: var(--accent-dark);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(26, 145, 197, 0.65);
+        }
+
+        .button-link:active {
+            transform: scale(0.98);
+        }
+
+        [data-theme="light"] .button-link {
+            background-color: var(--accent);
+            color: white;
+        }
+
+        .btn-container {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+    </style>
+{% endblock %}
+
+{% block title %}Sections for {{ degree }} - {{ stream }}{% endblock %}
+
+{% block content %}
+    <p style="text-align: center; font-size: 3em">{{ degree }} - {{ stream }} ({{ year }}) - {{ campus }}</p>
+    <div class="btn-container">
+        {% for section in sections %}
+            <a href="/degree/{{ degree }}/{{ stream }}/{{ year }}/{{ campus }}/{{ section }}" class="button-link">Section {{ section }}</a>
+        {% endfor %}
+    </div>
+{% endblock %}

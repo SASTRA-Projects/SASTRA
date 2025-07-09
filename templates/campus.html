@@ -1,75 +1,130 @@
 {% extends "layout.html" %}
 
+{% block title %}Select Campus{% endblock %}
+
 {% block head %}
-<meta name="description"
-      content="Shows all the campuses.
-               Click any Campus name to display the Schools inside it.">
 <style>
-    .section-title {
+    .button-link {
+        display: inline-block;
+        width: 20.125rem; 
+        height: 7.625rem; 
+        line-height: 7.625rem; 
         text-align: center;
-        font-size: 3rem;
-        margin: 3rem 0;
-        font-weight: 700;
+        font-size: 1.5rem;
+        text-decoration: none;
+        background-color: var(--menu-footer-bg-dark);
+        color: white;
+        border-radius: 0.75rem;
+        box-shadow: 0 0.25rem 0.625rem rgba(26, 145, 197, 0.5); 
+        transition: all 0.3s ease;
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    .button-link:hover {
+        background-color: var(--accent-dark);
+        transform: translateY(-0.125rem); /* 2px */
+        box-shadow: 0 0.375rem 1rem rgba(26, 145, 197, 0.65); /* 6px 16px */
+    }
+
+    .button-link:active {
+        transform: scale(0.98);
+    }
+
+    [data-theme="light"] .button-link {
+        background-color: var(--accent);
+        color: white;
     }
 
     .grid-list {
         display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-        gap: 1.5rem;
+        grid-template-columns: repeat(auto-fit, minmax(18.75rem, 1fr)); /* 300px */
+        gap: 0.5rem;
         padding: 1rem;
-        width: 75vw;
+        width: 70vw;
         margin: 0 auto;
-        justify-content: center;
     }
 
-    .grid-item {
-        background-color: var(--input-bg-light);
-        border-radius: 16px;
-        box-shadow: var(--shadow);
-        padding: 1.5rem;
+    .section-title {
         text-align: center;
-        transition: transform 0.3s ease;
+        font-size: 2.5rem;
+        font-weight: bold;
+        margin-top: 2rem;
+    }
+
+    .course-table {
+        width: 90%;
+        margin: 2rem auto;
+        border-collapse: collapse;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        font-size: 1rem;
+    }
+
+    .course-table th, .course-table td {
+        border: 1px solid #ccc;
+        padding: 0.75rem;
+        text-align: center;
+    }
+
+    .course-table th {
+        background-color: var(--menu-footer-bg-dark);
+        color: white;
+    }
+
+    [data-theme="light"] .course-table th {
+        background-color: var(--accent);
+        color: white;
+    }
+
+    .course-table tr:nth-child(even) {
+        background-color: #f2f2f2;
+    }
+
+    .center-single {
         display: flex;
         justify-content: center;
-        align-items: center;
-        height: 100%;
-    }
-
-    [data-theme="dark"] .grid-item {
-        background-color: var(--input-bg-dark);
-    }
-
-    .grid-item a {
-        text-decoration: none;
-        font-size: 1.8rem;
-        color: var(--accent);
-        font-weight: 600;
-        display: block;
-    }
-
-    .grid-item:hover {
-        transform: translateY(-5px);
-    }
-
-    .grid-item a:hover {
-        color: var(--accent-dark);
+        margin-top: 1rem;
     }
 </style>
 {% endblock %}
 
-{% block title %}SASTRA Campuses{% endblock %}
-
 {% block content %}
-{% if not campuses %}
-    <p class="section-title">No Campus Found!</p>
+{% if degree and stream and year %}
+<p class="section-title">{{ degree }} - {{ stream }} ({{ year }})</p>
+{% elif degree and stream %}
+<p class="section-title">{{ degree }} - {{ stream }}</p>
 {% else %}
-    <p class="section-title">Campuses</p>
-    <div class="grid-list">
-        {% for campus in campuses %}
-        <div class="grid-item">
-            <a href="/campus/{{ campus.name }}">{{ campus.name }}</a>
-        </div>
-        {% endfor %}
-    </div>
+<p class="section-title">Select a Campus</p>
+{% endif %}
+
+{% if campuses|length == 1 %}
+<div class="center-single">
+    {% if degree and stream and year %}
+        <a href="{{ url_for('view_sections', degree=degree, stream=stream, year=year, campus=campuses[0].name) }}" class="button-link">
+            {{ campuses[0].name }}
+        </a>
+    {% elif degree and stream %}
+        <a href="{{ url_for('view_sections', degree=degree, stream=stream, year=1, campus=campuses[0].name) }}" class="button-link">
+            {{ campuses[0].name }}
+        </a>
+    {% else %}
+        <a href="/campus/{{ campuses[0].name }}" class="button-link">{{ campuses[0].name }}</a>
+    {% endif %}
+</div>
+{% else %}
+<div class="grid-list">
+    {% for campus in campuses %}
+        {% if degree and stream and year %}
+            <a href="{{ url_for('view_sections', degree=degree, stream=stream, year=year, campus=campus.name) }}" class="button-link">
+                {{ campus.name }}
+            </a>
+        {% elif degree and stream %}
+            <a href="{{ url_for('view_sections', degree=degree, stream=stream, year=1, campus=campus.name) }}" class="button-link">
+                {{ campus.name }}
+            </a>
+        {% else %}
+            <a href="/campus/{{ campus.name }}" class="button-link">{{ campus.name }}</a>
+        {% endif %}
+    {% endfor %}
+</div>
 {% endif %}
 {% endblock %}

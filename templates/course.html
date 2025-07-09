@@ -88,12 +88,12 @@
             </tr>
             {% for course in courses %}
                 <tr>
-                    <td>{{ course.name }}</td>
-                    <td>{{ course.code }}</td>
+                    <td>{{course.name }}</td>
+                    <td>{{course.code }}</td>
                     <td>{{ course.L }}</td>
-                    <td>{{ course.P }}</td>
                     <td>{{ course.T }}</td>
-                    <td>{{ course.credits }}</td>
+                    <td>{{ course.P }}</td>
+                    <td>{{ course.credit}}</td>
                 </tr>
             {% endfor %}
         </table>

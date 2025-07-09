@@ -4,6 +4,38 @@
 	<meta name="description"
           content="Shows all the Departments.
                    Click any Department name to display more info about it.">
+	<style>
+		.button-link {
+			display: inline-block;
+			width: 322px;
+			height: 122px;
+			line-height: 122px;
+			text-align: center;
+			font-size: 1.5rem;
+			text-decoration: none;
+			background-color: var(--menu-footer-bg-dark);
+			color: white;
+			border-radius: 12px;
+			box-shadow: 0 4px 10px rgba(26, 145, 197, 0.5);
+			transition: all 0.3s ease;
+			font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+		}
+
+		.button-link:hover {
+			background-color: var(--accent-dark);
+			transform: translateY(-2px);
+			box-shadow: 0 6px 16px rgba(26, 145, 197, 0.65);
+		}
+
+		.button-link:active {
+			transform: scale(0.98);
+		}
+
+		[data-theme="light"] .button-link {
+			background-color: var(--accent);
+			color: white;
+		}
+	</style>
 {% endblock %}
 
 {% block title %}SASTRA Departments{% endblock %}
@@ -17,7 +49,7 @@
 			{% for department in departments %}
 				<hr>
 				<li style="text-align: center; font-size: 3em">
-					<a href="/department/{{ department.name }}" class="nounderline">{{ department["name"] }}</a>
+					<a href="/department/{{ department.name }}" class="button-link">{{ department["name"] }}</a>
 				</li>
 			{% endfor %}
 		</ul>

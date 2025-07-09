@@ -17,8 +17,8 @@
       --menu-footer-bg-dark: #0d0621;
       --link-color: #1d4fa0;
       --link-color-dark: #5d7dd6;
-      --link-hover-bg: rgba(50,130,246,0.2);
-      --link-hover-bg-dark: rgba(130,50,246,0.2);
+      --link-hover-bg: rgba(59,130,246,0.1);
+      --link-hover-bg-dark: rgba(30,58,138,0.1);
       --accent: #3b82f6;
       --accent-dark: #3463e3;
       --input-bg-light: #f9fafb;
@@ -244,8 +244,8 @@
   {% block head %}{% endblock %}
   <script>
     (() => {
-      const saved = localStorage.getItem("theme") || "dark";
-      document.documentElement.setAttribute("data-theme", saved);
+      const saved = localStorage.getItem('theme') || 'dark';
+      document.documentElement.setAttribute('data-theme', saved);
     })();
   </script>
 </head>
@@ -276,7 +276,7 @@
   </footer>
 
   <script>
-    const btn = document.getElementById("themeToggle");
+    const btn = document.getElementById('themeToggle');
     const root = document.documentElement;
     const icons = {
       sun: `<svg xmlns="http://www.w3.org/2000/svg"
@@ -296,15 +296,15 @@
                viewBox="0 0 24 24"><path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/>
             </svg>`
     };
-    const updateIcon = (theme) => btn.innerHTML = icons[theme === "dark" ? "moon" : "sun"];
+    const updateIcon = (theme) => btn.innerHTML = icons[theme === 'dark' ? 'moon' : 'sun'];
 
-    let theme = root.getAttribute("data-theme") || "dark";
+    let theme = root.getAttribute('data-theme') || 'dark';
     updateIcon(theme);
 
-    btn.addEventListener("click", () => {
-      theme = theme === "dark" ? "light" : "dark";
-      root.setAttribute("data-theme", theme);
-      localStorage.setItem("theme", theme);
+    btn.addEventListener('click', () => {
+      theme = theme === 'dark' ? 'light' : 'dark';
+      root.setAttribute('data-theme', theme);
+      localStorage.setItem('theme', theme);
       updateIcon(theme);
     });
   </script>

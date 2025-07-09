@@ -1,39 +1,169 @@
-{% extends "layout.html" %}
+	{% extends "layout.html" %}
 
-{% block head %}
-	<meta name="description"
-          content="Shows all the Programmes (from all campuses).
-                   Click any Programme name to display more info about it.">
-{% endblock %}
+	{% block head %}
+		<meta name="description"
+			content="Shows all the Programmes (from all campuses).
+					Click any Programme name to display more info about it.">
+		<style>
+			.button-link {
+				display: inline-block;
+				width: 322px;
+				height: 122px;
+				line-height: 122px;
+				text-align: center;
+				font-size: 1.5rem;
+				text-decoration: none;
+				background-color: var(--menu-footer-bg-dark);
+				color: white;
+				border-radius: 12px;
+				box-shadow: 0 4px 10px rgba(26, 145, 197, 0.5);
+				transition: all 0.3s ease;
+				font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+				margin: 10px;
+			}
 
-{% block title %}SASTRA Programmes{% endblock %}
+			.button-link:hover {
+				background-color: var(--accent-dark);
+				transform: translateY(-2px);
+				box-shadow: 0 6px 16px rgba(26, 145, 197, 0.65);
+			}
 
-{% block content %}
-	{% if not programmes %}
-		<p style="margin: auto; text-align: center; font-size: 3em">
-			{% if degree %}
-				Programmes
-				<hr>
-				<ul class="nobulletins">
-					<li style="text-align: center; font-size: 3em">
-						<a href="/programme/{{ degree }}" class="nounderline">{{ degree }}</a>
-					</li>
-				</ul>
-			{% else %}
-				<span style="font-size: 4em;">Programmes Found!!</span>
-			{% endif %}
-		</p>
-	{% else %}
-		<p style="margin: auto; text-align: center; font-size: 3em">Programmes
-			{% if degree %} ({{ degree }}) {% endif %}
-		</p>
-		<ul class="nobulletins">
-			{% for programme in programmes %}
-				<hr>
-				<li style="text-align: center; font-size: 3em">
-					<a href="/programme/{{ degree }}/{{ programme.stream }}" class="nounderline">{{ programme["stream"] }}</a>
-				</li>
-			{% endfor %}
-		</ul>
-	{% endif %}
-{% endblock %}
+			.button-link:active {
+				transform: scale(0.98);
+			}
+
+			[data-theme="light"] .button-link {
+				background-color: var(--accent);
+				color: white;
+			}
+
+			.timetable-table {
+				width: 100%;
+				border-collapse: collapse;
+				margin-top: 40px;
+				font-size: 1.2rem;
+				text-align: center;
+			}
+
+			.timetable-table th, .timetable-table td {
+				border: 1px solid #ccc;
+				padding: 10px;
+			}
+
+			.timetable-table th {
+				background-color: #2b6cb0;
+				color: white;
+			}
+
+			.year-form {
+				display: inline-block;
+				margin: 10px;
+			}
+
+			.year-button {
+				width: 200px;
+				height: 60px;
+				font-size: 1.3rem;
+				border: none;
+				border-radius: 10px;
+				background-color: var(--menu-footer-bg-dark);
+				color: white;
+				cursor: pointer;
+				box-shadow: 0 4px 10px rgba(26, 145, 197, 0.5);
+				transition: all 0.3s ease;
+				font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+				display: inline-block;
+				text-align: center;
+				line-height: 60px;
+				text-decoration: none;
+				margin: 10px;
+			}
+
+			.year-button:hover {
+				background-color: var(--accent-dark);
+				transform: translateY(-2px);
+				box-shadow: 0 6px 16px rgba(26, 145, 197, 0.65);
+			}
+
+			.btn-container {
+				display: flex;
+				justify-content: center;
+				flex-wrap: wrap;
+				gap: 20px;
+			}
+		</style>
+	{% endblock %}
+
+	{% block title %}SASTRA Programmes{% endblock %}
+
+	{% block content %}
+		{% if not programmes %}
+			<p style="margin: auto; text-align: center; font-size: 3em">
+				{% if degree %}
+					Programmes
+					<hr>
+					<div class="btn-container">
+						<a href="/programme/{{ degree }}" class="button-link">{{ degree }}</a>
+					</div>
+				{% else %}
+					<span style="font-size: 4em;">Programmes Found!!</span>
+				{% endif %}
+			</p>
+		{% else %}
+			<p style="margin: auto; text-align: center; font-size: 3em">Programmes
+				{% if degree %} ({{ degree }}) {% endif %}
+			</p>
+			<div class="btn-container">
+				{% for programme in programmes %}
+					<a href="/programme/{{ degree }}/{{ programme.stream }}" class="button-link">{{ programme["stream"] }}</a>
+					<a href="/programme/{{ degree }}/{{ programme.stream }}/all" class="year-button">View All Courses</a>
+				{% endfor %}
+			</div>
+		{% endif %}
+
+		{% if stream %}
+			<hr>
+			<p style="text-align: center; font-size: 2em;">Select Year</p>
+			<div style="text-align: center;">
+				<p style="font-size: 1.5em;">1st Year</p>
+				<a href="/programme/{{ degree }}/{{ stream }}/1/SASTRA" class="year-button">SASTRA</a>
+				<a href="/programme/{{ degree }}/{{ stream }}/1/SRC" class="year-button">SRC</a>
+				<a href="/programme/{{ degree }}/{{ stream }}/1/Chennai Campus" class="year-button">Chennai</a>
+
+				<p style="font-size: 1.5em;">2nd Year</p>
+				<a href="/programme/{{ degree }}/{{ stream }}/2/SASTRA" class="year-button">SASTRA</a>
+				<a href="/programme/{{ degree }}/{{ stream }}/2/SRC" class="year-button">SRC</a>
+				<a href="/programme/{{ degree }}/{{ stream }}/2/Chennai Campus" class="year-button">Chennai</a>
+
+				<p style="font-size: 1.5em;">3rd Year</p>
+				<a href="/programme/{{ degree }}/{{ stream }}/3/SASTRA" class="year-button">SASTRA</a>
+				<a href="/programme/{{ degree }}/{{ stream }}/3/SRC" class="year-button">SRC</a>
+				<a href="/programme/{{ degree }}/{{ stream }}/3/Chennai Campus" class="year-button">Chennai</a>
+			</div>
+		{% endif %}
+
+		{% if timetable %}
+			<hr>
+			<h2 style="text-align: center; font-size: 2.5em; margin-top: 40px;">Timetable</h2>
+			<table class="timetable-table">
+				<tr>
+					<th>Day</th>
+					<th>Hour</th>
+					<th>Course Code</th>
+					<th>Room No</th>
+					<th>Building ID</th>
+					<th>Faculty ID</th>
+				</tr>
+				{% for entry in timetable %}
+				<tr>
+					<td>{{ entry.day }}</td>
+					<td>{{ entry.hour }}</td>
+					<td>{{ entry.course_code }}</td>
+					<td>{{ entry.room_no }}</td>
+					<td>{{ entry.building_id }}</td>
+					<td>{{ entry.faculty_id }}</td>
+				</tr>
+				{% endfor %}
+			</table>
+		{% endif %}
+	{% endblock %}
