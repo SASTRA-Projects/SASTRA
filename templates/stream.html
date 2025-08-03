@@ -1,0 +1,25 @@
+{% extends "layout.html" %}
+
+{% block head %}
+	<meta name="description"
+          content="Shows all the Streams of specific degree (from all campuses).
+                   Click any Degree name to display more info about it.">
+{% endblock %}
+
+{% block title %}{{ degree }} Streams{% endblock %}
+
+{% block content %}
+    {% if not stream %}
+        <p style="margin: auto; text-align: center; font-size: 4em">No Streams Found!</p>
+    {% else %}
+        <p style="margin: auto; text-align: center; font-size: 3em">Streams</p>
+        <ul class="nobulletins">
+            {% for degree in streams %}
+                <hr>
+                <li style="text-align: center; font-size: 3em">
+                    <a href="/programme/{{ streams.stream }}" class="nounderline">{{ streams["stream"] }}</a>
+                </li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+{% endblock %}

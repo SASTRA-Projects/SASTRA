@@ -1,0 +1,20 @@
+[project]
+name = "sastra-webapp"
+version = "1.0.0b1"
+description = "SASTRA Timetable Web Application"
+requires-python = ">=3.11"
+
+dependencies = [
+    "Flask==3.1.1",
+    "Jinja2==3.1.6",
+    "PyMySQL==1.1.1",
+    "mypy==1.17.0"
+]
+
+[tool.flask]
+app = "app:app"
+env = "production"
+
+[build-system]
+requires = ["setuptools"]
+build-backend = "setuptools.build_meta"

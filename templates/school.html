@@ -1,0 +1,53 @@
+{% extends "layout.html" %}
+
+{% block head %}
+	<meta name="description"
+          content="Shows all the schools in a particular campus.
+                   Click any School name to display the Building details inside it.">
+	<style>
+		.school-button {
+			display: inline-block;
+			width: 290px;
+			height: 90px;
+			line-height: 90px;
+			background-color: #0d0722;
+			color: #fff;
+			text-align: center;
+			font-size: 2rem;
+			border: none;
+			border-radius: 12px;
+			box-shadow: 0 4px 15px rgba(59, 130, 246, 0.6);
+			cursor: pointer;
+			text-decoration: none;
+			transition: all 0.3s ease;
+		}
+
+		.school-button:hover {
+			transform: scale(1.03);
+			box-shadow: 0 6px 20px rgba(59, 130, 246, 0.8);
+		}
+
+		.btn-container {
+			display: flex;
+			justify-content: center;
+			flex-wrap: wrap;
+			gap: 20px;
+			margin-top: 30px;
+		}
+	</style>
+{% endblock %}
+
+{% block title %}{{ campus }} Schools{% endblock %}
+
+{% block content %}
+	{% if not schools %}
+		<p style="margin: auto; text-align: center; font-size: 4em">No Schools Found!</p>
+	{% else %}
+		<p style="margin: auto; text-align: center; font-size: 3em">Schools</p>
+		<div class="btn-container">
+			{% for school in schools %}
+				<a href="/school/{{ campus }}/{{ school.name }}" class="school-button">{{ school["name"] }}</a>
+			{% endfor %}
+		</div>
+	{% endif %}
+{% endblock %}

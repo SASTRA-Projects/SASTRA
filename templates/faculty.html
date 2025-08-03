@@ -1,0 +1,103 @@
+{% extends "layout.html" %}
+
+{% block head %}
+    <meta name="description"
+          content="Shows faculty details. Displays the personal information of the authenticated (logged-in) faculty.">
+    <style>
+        .faculty-card {
+            width: 100%;
+            max-width: 400px;
+            margin: 60px auto;
+            background-color: #ffffff;
+            box-shadow: var(--shadow);
+            border-radius: 16px;
+            padding: 25px;
+            font-family: 'Inter', sans-serif;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: flex-start;
+            color: var(--text-light);
+        }
+
+        [data-theme="dark"] .faculty-card {
+            background-color: var(--input-bg-dark);
+            color: var(--text-dark);
+        }
+
+        .faculty-card p {
+            font-size: 1.05rem;
+            font-weight: 500;
+            margin: 10px 0;
+            word-wrap: break-word;
+        }
+
+        .empty-message {
+            margin: 100px auto;
+            text-align: center;
+            font-size: 2.5em;
+            color: var(--error);
+            font-family: 'Inter', sans-serif;
+        }
+
+        @media (max-width: 768px) {
+            .faculty-card {
+                padding: 20px;
+                border-radius: 14px;
+            }
+
+            .faculty-card p {
+                font-size: 1rem;
+                margin: 8px 0;
+            }
+
+            .empty-message {
+                font-size: 2em;
+                padding: 0 1rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .faculty-card {
+                margin: 40px 16px;
+                padding: 18px;
+                border-radius: 12px;
+            }
+
+            .faculty-card p {
+                font-size: 0.95rem;
+                margin: 6px 0;
+            }
+
+            .empty-message {
+                font-size: 1.7em;
+                padding: 0 1rem;
+            }
+        }
+
+        @media (min-width: 1024px) {
+            .faculty-card {
+                font-size: 1.1rem;
+                padding: 30px;
+                max-width: 500px;
+            }
+        }
+    </style>
+{% endblock %}
+
+{% block title %}Faculty Details{% endblock %}
+
+{% block content %}
+    {% if not faculty %}
+        <p class="empty-message">Faculty ID Not Provided!</p>
+    {% else %}
+        <div class="faculty-card">
+            <p><strong>Name:</strong> {{ faculty["name"] }}</p>
+            <p><strong>Phone Number:</strong> {{ faculty["phone"] }}</p>
+            <p><strong>Campus:</strong> {{ campus }}</p>
+            <p><strong>Department:</strong> {{ faculty["department"] }}</p>
+            <p><strong>Date of Join:</strong> {{ faculty["join_year"] }}</p>
+            <p><strong>Salary:</strong> ₹{{ faculty["salary"] }}</p>
+        </div>
+    {% endif %}
+{% endblock %}

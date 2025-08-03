@@ -1,0 +1,36 @@
+{% extends "layout.html" %}
+
+{% block head %}
+    <meta name="description"
+          content="Welcome to the home page! Shows Campuses, Degrees, and Faculty Details.">
+    <style>
+        .wrapper {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.6rem;
+            margin-top: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+    </style>
+{% endblock %}
+
+{% block title %}Home{% endblock %}
+
+{% block content %}
+    <h1 style="text-align: center; font-size: 3em; margin-bottom: 1rem;">Welcome to the Home Page!</h1>
+
+    <div class="wrapper">
+        <form action="/campus">
+            <button type="submit" class="button">Campuses</button>
+        </form>
+
+        <form action="/degree">
+            <button type="submit" class="button">Degrees</button>
+        </form>
+
+        <form action="/faculty">
+            <button type="submit" class="button">Faculty Details</button>
+        </form>
+    </div>
+{% endblock %}

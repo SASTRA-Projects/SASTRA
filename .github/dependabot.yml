@@ -1,0 +1,10 @@
+version: 2
+updates:
+  - package-ecosystem: "pip"
+    directory: "/" # The location of requirements.txt
+    schedule:
+      interval: "weekly"
+    versioning-strategy: "increase" # Allow updates only when the version increases
+    ignore:
+      - dependency-name: "Flask"
+        update-types: ["version-update:semver-major"]

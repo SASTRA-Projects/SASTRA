@@ -1,0 +1,70 @@
+{% extends "layout.html" %}
+
+{% block title %}Select Campus{% endblock %}
+
+{% block head %}
+<meta name="description" content="Shows all the campuses. Click any Campus name to display the Schools inside it.">
+<style>
+    .grid-list {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(15.625rem, 1fr));
+        gap: 1.5rem;
+        padding: 1rem;
+        width: 80vw;
+        margin: 0 auto;
+        justify-content: center;
+    }
+
+    .grid-item {
+        background-color: var(--input-bg-light);
+        border-radius: 1rem;
+        box-shadow: var(--shadow);
+        padding: 1.5rem;
+        text-align: center;
+    }
+
+    .course-table th {
+        background-color: var(--menu-footer-bg-dark);
+        color: white;
+    }
+
+    [data-theme="dark"] .grid-item {
+        background-color: var(--input-bg-dark);
+    }
+
+    .grid-item a {
+        text-decoration: none;
+        font-size: 1.8rem;
+        color: var(--accent);
+        font-weight: 600;
+        display: block;
+    }
+
+    .grid-item:hover {
+        transform: translateY(-0.3125rem);
+    }
+
+    .grid-item a:hover {
+        color: var(--accent-dark);
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+{% if not campuses %}
+    <h1>No Campus Found!</h1>
+{% else %}
+    <h1>Campuses</h1>
+    <div class="grid-list">
+        {% for campus in campuses %}
+        <div class="center-single">
+            {% if degree and stream and programme_id is not none %}
+                <a class="button-link" href="/programme/{{ degree }}/{{ stream }}/{{campus.name}}">{{ campus.name }}</a>
+            {% else %}
+                <a class="button-link" href="/campus/{{ campus.name }}">{{ campus.name }}</a>
+            {% endif %}
+        </div>
+        {% endfor %}
+    </div>
+{% endif %}
+{% endblock %}

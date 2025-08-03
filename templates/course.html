@@ -1,0 +1,101 @@
+{% extends "layout.html" %}
+
+{% block head %}
+    <meta name="description"
+          content="Lists the all the courses and its information in a table.">
+    <style>
+        table {
+            width: 100%;
+            max-width: 1200px;
+            margin: 2rem auto;
+            border-collapse: collapse;
+            font-family: 'Inter', sans-serif;
+            background: #fff;
+            box-shadow: 0 4px 16px rgba(59,130,246,0.2);
+            border-radius: 12px;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+        [data-theme="dark"] table {
+            background: #1C1033;
+            box-shadow: 0 4px 16px rgba(139,92,246,0.3);
+        }
+        table th, table td {
+            padding: 1.2rem;
+            text-align: left;
+            border-bottom: 1px solid #D1D5DB;
+            transition: all 0.3s ease;
+        }
+        [data-theme="dark"] table th, [data-theme="dark"] table td {
+            border-bottom: 1px solid #6D28D9;
+            color: #E9D5FF;
+        }
+        table th {
+            background: linear-gradient(135deg, #3B82F6, #1e40af);
+            color: white;
+            font-weight: 600;
+            font-size: 1.1rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+        [data-theme="dark"] table th {
+            background: linear-gradient(135deg, #6B21A8, #9333EA);
+        }
+        table tr {
+            transition: all 0.3s ease;
+        }
+        table tr:hover {
+            background: rgba(59,130,246,0.1);
+            transform: translateY(-2px);
+        }
+        [data-theme="dark"] table tr:hover {
+            background: rgba(139,92,246,0.1);
+        }
+        table td {
+            font-size: 1rem;
+            color: #2D3748;
+        }
+
+        [data-theme="dark"] table td {
+            color: #E9D5FF;
+        }
+        table tr:last-child td {
+            border-bottom: none;
+        }
+        @media (max-width: 600px) {
+            table th, table td {
+                padding: 0.8rem;
+                font-size: 0.9rem;
+            }
+        }
+    </style>
+{% endblock %}
+
+{% block title %}{{ degree }} ({{ stream }}){% endblock %}
+
+{% block content %}
+    {% if not courses %}
+        <p style="text-align: center; font-size: 2rem; color: white;">No courses found!</p>
+    {% else %}
+        <table>
+            <tr>
+                <th>Course Name</th>
+                <th>Course Code</th>
+                <th>L</th>
+                <th>T</th>
+                <th>P</th>
+                <th>Credit</th>
+            </tr>
+            {% for course in courses %}
+                <tr>
+                    <td>{{ course.course_name or course.name }}</td>
+                    <td>{{ course.course_code or course.code }}</td>
+                    <td>{{ course.L }}</td>
+                    <td>{{ course.T }}</td>
+                    <td>{{ course.P }}</td>
+                    <td>{{ course.credit or course.credits }}</td>
+                </tr>
+            {% endfor %}
+        </table>
+    {% endif %}
+{% endblock %}

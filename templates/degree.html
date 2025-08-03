@@ -1,0 +1,62 @@
+{% extends "layout.html" %}
+
+{% block head %}
+	<meta name="description"
+          content="Shows all the Degrees (from all campuses).
+                   Click any Degree name to display more info about it.">
+	<style>
+		.lux-button-link {
+			display: inline-block;
+			width: 322px;
+			height: 122px;
+			line-height: 122px;
+			text-align: center;
+			font-size: 1.5rem;
+			text-decoration: none;
+			background-color: var(--menu-footer-bg-dark);
+			color: white;
+			border-radius: 12px;
+			box-shadow: 0 4px 10px rgba(26, 145, 197, 0.5);
+			transition: all 0.3s ease;
+			font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+			margin: 10px;
+		}
+
+		.lux-button-link:hover {
+			background-color: var(--accent-dark);
+			transform: translateY(-2px);
+			box-shadow: 0 6px 16px rgba(26, 145, 197, 0.65);
+		}
+
+		.lux-button-link:active {
+			transform: scale(0.98);
+		}
+
+		[data-theme="light"] .lux-button-link {
+			background-color: var(--accent);
+			color: white;
+		}
+
+		.btn-container {
+			display: flex;
+			justify-content: center;
+			flex-wrap: wrap;
+			gap: 20px;
+		}
+	</style>
+{% endblock %}
+
+{% block title %}SASTRA Degrees{% endblock %}
+
+{% block content %}
+	{% if not degrees %}
+		<p style="margin: auto; text-align: center; font-size: 4em">No Degree Found!</p>
+	{% else %}
+		<p style="margin: auto; text-align: center; font-size: 3em">Degrees</p>
+		<div class="btn-container">
+			{% for degree in degrees %}
+				<a href="/degree/{{ degree.name }}" class="lux-button-link">{{ degree["name"] }}</a>
+			{% endfor %}
+		</div>
+	{% endif %}
+{% endblock %}

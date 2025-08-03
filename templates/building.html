@@ -1,0 +1,52 @@
+{% extends "layout.html" %}
+
+{% block head %}
+    <meta name="description"
+          content="Shows all the buildings in a particular school.">
+    <style>
+        .nobulletins {
+            list-style: none;
+            padding: 0;
+        }
+        .nobulletins li {
+            margin: 1rem 0;
+            padding: 1rem;
+            background-color: var(--input-bg-light);
+            border-radius: 12px;
+            box-shadow: var(--shadow);
+            transition: transform 0.2s ease;
+        }
+        [data-theme="dark"] .nobulletins li {
+            background-color: var(--input-bg-dark);
+        }
+        .nobulletins li:hover {
+            transform: scale(1.02);
+        }
+        hr {
+            border: none;
+            border-top: 1px solid var(--input-border-light);
+            margin: 1rem 0;
+        }
+    </style>
+{% endblock %}
+
+{% block title %}{{ campus }} - {{ school }} Buildings{% endblock %}
+
+{% block content %}
+    {% if not buildings %}
+        <p style="margin: auto; text-align: center; font-size: 4em">No Buildings Found!</p>
+    {% else %}
+        <p style="margin: auto; text-align: center; font-size: 3em">
+            Buildings in {{ campus }} - {{ school }}
+        </p>
+        <ul class="nobulletins">
+            {% for building in buildings %}
+                <hr>
+                <li style="text-align: center; font-size: 1.8em">
+                    Building: {{ building.id }}<br>
+                    No. of Classrooms: {{ building.rooms }}
+                </li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+{% endblock %}

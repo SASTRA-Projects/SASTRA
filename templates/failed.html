@@ -1,0 +1,24 @@
+{% extends "layout.html" %}
+
+{% block head %}
+<meta name="description"
+      content="This is a default Error page for any failures.">
+<style>
+    .error {
+        color: red;
+        font-weight: bold;
+        font-size: 2em;
+        text-align: center;
+        margin-top: 1rem;
+    }
+</style>
+{% endblock %}
+
+{% block title %}Error{% endblock %}
+
+{% block content %}
+<div style="text-align: center; margin-top: 2rem;">
+    <h1>Error Occurred!!</h1>
+    <div class="error">{{ reason }}</div>
+</div>
+{% endblock %}

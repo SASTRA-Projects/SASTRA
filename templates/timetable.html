@@ -1,0 +1,178 @@
+{% extends "layout.html" %}
+
+{% block head %}
+    <meta name="description" content="Timetable for academic sections showing daily schedules and course details.">
+    <style>
+        table, th, td {
+            border: 0.0625rem solid var(--input-border-light);
+            border-collapse: collapse;
+            text-align: center;
+            padding: 0.5rem;
+        }
+        [data-theme="dark"] table, [data-theme="dark"] th, [data-theme="dark"] td {
+            border-color: var(--input-border-dark);
+        }
+        th {
+            font-weight: bold;
+            background-color: #d2b48c;
+        }
+        [data-theme="dark"] th {
+            background-color: #8b6f47;
+        }
+        td {
+            background-color: #f5e6cc;
+        }
+        [data-theme="dark"] td {
+            background-color: #3c2f1f;
+        }
+        .course-table {
+            width: 100%;
+            margin-top: 1.25rem;
+        }
+        .course-table th, .course-table td {
+            padding: 0.5rem;
+        }
+        h2 {
+            text-align: center;
+            margin: 1.5rem 0;
+            font-size: 1.75rem;
+            color: var(--text-dark);
+        }
+        .timetable-container {
+            width: 100%;
+            max-width: 90rem;
+            margin: 0 auto;
+            padding: 0 1rem;
+        }
+        table {
+            width: 100%;
+            font-size: clamp(0.75rem, 1.5vw, 0.875rem);
+        }
+        th, td {
+            height: auto;
+            min-height: 2rem;
+            padding: clamp(0.3rem, 1vw, 0.5rem);
+        }
+        th:first-child, td:first-child {
+            width: 10%;
+            min-width: 5rem;
+        }
+        @media (max-width: 37.5rem) {
+            th:first-child, td:first-child {
+                width: 15%;
+                min-width: 4rem;
+            }
+            table {
+                font-size: clamp(0.625rem, 1.2vw, 0.75rem);
+            }
+        }
+        .download-btn {
+            display: block;
+            margin: 1rem auto;
+            padding: 0.5rem 1rem;
+            background-color: var(--accent);
+            color: white;
+            border: none;
+            border-radius: 0.375rem;
+            cursor: pointer;
+            font-size: 1rem;
+        }
+    </style>
+{% endblock %}
+
+{% block title %}Timetable{% endblock %}
+
+{% block content %}
+    <div class="timetable-container">
+        <h1>{{ title }}</h1>
+        <div id="timetable">
+            <table>
+                <tr>
+                    <th>Day</th>
+                    {% for p in periods %}
+                        <th>{{ p["time_range"] }}</th>
+                    {% endfor %}
+                </tr>
+                {% for day in days %}
+                    <tr>
+                        <td>{{ day }}</td>
+                        {% for p in periods %}
+                            <td>{{ grid[day][p["id"]] }}</td>
+                        {% endfor %}
+                    </tr>
+                {% endfor %}
+            </table>
+            <table class="course-table">
+                <tr>
+                    <th>Course Code</th>
+                    <th>Course</th>
+                    <th>No. of Periods</th>
+                    <th>Faculties</th>
+                    <th>Credits</th>
+                </tr>
+                {% for code, data in course_data.items() %}
+                    <tr>
+                        <td>{{ code }}</td>
+                        <td>{{ data["name"] }}</td>
+                        <td>{{ data["L"] + data["P"] + data["T"] }}</td>
+                        <td>{{ data["faculties"] }}</td>
+                        <td>{{ data["credits"] }}</td>
+                    </tr>
+                {% endfor %}
+            </table>
+        </div>
+        <button class="download-btn" onclick="downloadTable()">Download Timetable</button>
+    </div>
+    <script>
+        function downloadTable() {
+            const table = document.getElementById("timetable").innerHTML;
+            const title = document.querySelector('h1').textContent
+                                  .replace(/[()]/g, "")
+                                  .replace(/[ -]/g, "_").toLocaleLowerCase();
+            const htmlContent = `
+                <!DOCTYPE html>
+                <html>
+                <head>
+                    <title>Timetable</title>
+                    <style>
+                        table, th, td {
+                            border: 1px solid #666;
+                            border-collapse: collapse;
+                            text-align: center;
+                            padding: 8px;
+                            font-family: Arial, sans-serif;
+                            font-size: 10pt;
+                        }
+                        th {
+                            background-color: #d2b48c;
+                            font-weight: bold;
+                        }
+                        td {
+                            background-color: #f5e6cc;
+                        }
+                        .course-table {
+                            width: 100%;
+                            margin-top: 20px;
+                        }
+                        h2 {
+                            text-align: center;
+                            font-size: 14pt;
+                            margin: 10px 0;
+                        }
+                    </style>
+                </head>
+                <body>
+                    <h2>${document.querySelector("h1").textContent}</h2>
+                    ${table}
+                </body>
+                </html>`;
+            const blob = new Blob([htmlContent], { type: "text/html" });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement("a");
+            a.href = url;
+            a.download = `${title}.html`;
+            a.click();
+            URL.revokeObjectURL(url);
+        }
+    </script>
+{% endblock %}
