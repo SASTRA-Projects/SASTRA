@@ -30,13 +30,15 @@
     </style>
 {% endblock %}
 
-{% block title %}{{ school }} Buildings{% endblock %}
+{% block title %}{{ campus }} - {{ school }} Buildings{% endblock %}
 
 {% block content %}
     {% if not buildings %}
         <p style="margin: auto; text-align: center; font-size: 4em">No Buildings Found!</p>
     {% else %}
-        <p style="margin: auto; text-align: center; font-size: 3em">Buildings</p>
+        <p style="margin: auto; text-align: center; font-size: 3em">
+            Buildings in {{ campus }} - {{ school }}
+        </p>
         <ul class="nobulletins">
             {% for building in buildings %}
                 <hr>

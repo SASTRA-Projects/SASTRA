@@ -1,39 +1,96 @@
+programme.html
+
 {% extends "layout.html" %}
 
 {% block head %}
-	<meta name="description"
-          content="Shows all the Programmes (from all campuses).
-                   Click any Programme name to display more info about it.">
+    <meta name="description"
+        content="Shows all the Programmes (from all campuses).
+                 Click any Programme name to display more info about it.">
+    <style>
+        .button-link {
+            display: inline-block;
+            width: 322px;
+            height: 122px;
+            line-height: 122px;
+            text-align: center;
+            font-size: 1.5rem;
+            text-decoration: none;
+            background-color: var(--menu-footer-bg-dark);
+            color: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 10px rgba(26, 145, 197, 0.5);
+            transition: all 0.3s ease;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 10px;
+        }
+
+		.course-button {
+    	    display: inline-block;
+    	    width: 200px;              
+    	    height: 70px;               
+    	    line-height: 70px;          
+		    text-align: center;
+    	    font-size: 1.2rem;          
+    	    text-decoration: none;
+    	    background-color: var(--menu-footer-bg-dark);
+    	    color: white;
+    	    border-radius: 10px;
+    	    box-shadow: 0 4px 10px rgba(26, 145, 197, 0.5);
+    	    transition: all 0.3s ease;
+    	    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    	    margin: 8px;
+		}
+
+        .button-link:hover {
+            background-color: var(--accent-dark);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(26, 145, 197, 0.65);
+        }
+
+        .button-link:active {
+            transform: scale(0.98);
+        }
+
+        [data-theme="light"] .button-link {
+            background-color: var(--accent);
+            color: white;
+        }
+
+        .btn-container {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+    </style>
 {% endblock %}
 
 {% block title %}SASTRA Programmes{% endblock %}
 
 {% block content %}
-	{% if not programmes %}
-		<p style="margin: auto; text-align: center; font-size: 3em">
-			{% if degree %}
-				Programmes
-				<hr>
-				<ul class="nobulletins">
-					<li style="text-align: center; font-size: 3em">
-						<a href="/programme/{{ degree }}" class="nounderline">{{ degree }}</a>
-					</li>
-				</ul>
-			{% else %}
-				<span style="font-size: 4em;">Programmes Found!!</span>
-			{% endif %}
-		</p>
-	{% else %}
-		<p style="margin: auto; text-align: center; font-size: 3em">Programmes
-			{% if degree %} ({{ degree }}) {% endif %}
-		</p>
-		<ul class="nobulletins">
-			{% for programme in programmes %}
-				<hr>
-				<li style="text-align: center; font-size: 3em">
-					<a href="/programme/{{ degree }}/{{ programme.stream }}" class="nounderline">{{ programme["stream"] }}</a>
-				</li>
-			{% endfor %}
-		</ul>
-	{% endif %}
+    {% if not programmes %}
+        <p style="margin: auto; text-align: center; font-size: 3em">
+            {% if degree %}
+                Programmes
+                <hr>
+                <div class="btn-container">
+                    <a href="/programme/{{ degree }}" class="button-link">{{ degree }}</a>
+                </div>
+            {% else %}
+                <span style="font-size: 4em;">Programmes Found!!</span>
+            {% endif %}
+        </p>
+    {% else %}
+        <p style="margin: auto; text-align: center; font-size: 3em">Programmes
+            {% if degree %} ({{ degree }}) {% endif %}
+        </p>
+        <div class="btn-container">
+            {% for programme in programmes %}
+                <a href="/programme/{{ degree }}/{{ programme.stream }}" class="button-link">{{ programme["stream"] }}</a>
+				<a href="/programme/{{ degree }}/{{ programme.stream }}/course" class="course-button">Courses</a>
+            {% endfor %}
+        </div>
+    {% endif %}
+
+    
 {% endblock %}

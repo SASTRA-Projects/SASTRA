@@ -115,6 +115,8 @@ def generate_timetable(db_connector: Connection, cursor: Cursor,
 		cursor.execute("""SELECT COUNT(*) AS `no_of_students`,
 					   `FSC`.`section_id`, `course_code`,
 					   `get_is_elective`(`code`, `FSC`.`section_id`) AS `is_elective`
+					   `FSC`.`section_id`, `course_code`,
+					   `get_is_elective`(`code`, `FSC`.`section_id`) AS `is_elective`
 					   FROM `faculty_section_course` `FSC`
 					   JOIN `courses`
 					   ON `course_code`=`code`
@@ -127,6 +129,7 @@ def generate_timetable(db_connector: Connection, cursor: Cursor,
 					   GROUP BY `FSC`.`section_id`, `code`""",
 					   (campus_id, department))
 		no_of_students = [std for std in cursor.fetchall() if not std["is_elective"]]
+		no_of_students = [std for std in cursor.fetchall() if not std["is_elective"]]
 		cursor.execute("""SELECT COUNT(*) AS `no_of_sections`,
 					   `course_code`, `degree`, `stream`
 					   FROM `faculty_section_course` `FSC`
@@ -136,6 +139,7 @@ def generate_timetable(db_connector: Connection, cursor: Cursor,
 					   ON `code`=`course_code`
 					   AND `campus_id`=%s
 					   AND `department`=%s
+					   AND `get_is_elective`(`code`, `section_id`)
 					   AND `get_is_elective`(`code`, `section_id`)
 					   AND `P`
 					   GROUP BY `code`, `degree`, `stream`""",
@@ -151,6 +155,7 @@ def generate_timetable(db_connector: Connection, cursor: Cursor,
 					   JOIN `courses`
 					   ON `course_code`=`code`
 					   AND `get_is_elective`(`code`, `SS`.`section_id`)
+					   AND `get_is_elective`(`code`, `SS`.`section_id`)
 					   AND `P`
 					   AND `campus_id`=%s
 					   AND `department`=%s
@@ -158,6 +163,8 @@ def generate_timetable(db_connector: Connection, cursor: Cursor,
 					   (campus_id, department))
 		no_of_elective_students = cursor.fetchall()
 		cursor.execute("""SELECT `class_id`, `capacity`, `section_id`,
+					   `course_code`, `degree`, `stream`,
+					   `get_is_elective`(`course_code`, `section_id`) AS `is_elective`
 					   `course_code`, `degree`, `stream`,
 					   `get_is_elective`(`course_code`, `section_id`) AS `is_elective`
 					   FROM `timetables`
@@ -196,6 +203,7 @@ def generate_timetable(db_connector: Connection, cursor: Cursor,
 					   if sc["course_code"] == cls["course_code"]
 					   and sc["section_id"] == cls["section_id"]}
 		std_sec = {(std["section_id"], std["course_code"]): std["no_of_students"]
+				   for std in no_of_students
 				   for std in no_of_students
 				   for cls in class_capacity
 				   if std["course_code"] == cls["course_code"]
@@ -239,6 +247,7 @@ def generate_timetable(db_connector: Connection, cursor: Cursor,
 			course = fetch_data.get_course(cursor, code=course_code)
 			from_to = (day, period_id, day, period_id + forward)
 			if fetch_data.is_elective(cursor, course_code=course_code, section_id=section_id):
+			if fetch_data.is_elective(cursor, course_code=course_code, section_id=section_id):
 				section = fetch_data.get_section(cursor, section_id=section_id)
 				degree, stream = section["degree"], section["stream"]
 				possible = True
@@ -257,6 +266,7 @@ def generate_timetable(db_connector: Connection, cursor: Cursor,
 					  		   for faculty in faculties)
 				if not possible:
 					print(f"Unable to compress {day}{period_id}",
+						  f"{section["year"]}{section["degree"]}-{section["stream"]}{section["section"]}")
 						  f"{section["year"]}{section["degree"]}-{section["stream"]}{section["section"]}")
 					return False
 
@@ -334,12 +344,14 @@ def generate_timetable(db_connector: Connection, cursor: Cursor,
 			return (False, "Faculty has other class")
 
 		if fetch_data.is_elective(cursor, course_code=course_code, section_id=section_id):
+		if fetch_data.is_elective(cursor, course_code=course_code, section_id=section_id):
 			section = fetch_data.get_section(cursor, section_id=section_id)
 			degree, stream = section["degree"], section["stream"]
 			sections = fetch_data.get_sections(cursor, campus_id=campus_id, degree=degree, stream=stream)
 
 		if cls["is_lab"]:
 			lab_capacity = lab_capacities(cls["department"], to_day, to_period_id)
+			if fetch_data.is_elective(cursor, course_code=course_code, section_id=section_id):
 			if fetch_data.is_elective(cursor, course_code=course_code, section_id=section_id):
 				no_of_sections = len(section_ids)
 				cursor.execute("""SELECT 1
@@ -358,6 +370,7 @@ def generate_timetable(db_connector: Connection, cursor: Cursor,
 				no_of_students = len(fetch_data.get_section_students(cursor, section_id=section_id))
 			if lab_capacity < no_of_students:
 				return (False, "Lab has lesser capacity")
+		return (True, fetch_data.is_elective(cursor, course_code=course_code, section_id=section_id))
 		return (True, fetch_data.is_elective(cursor, course_code=course_code, section_id=section_id))
 
 	def can_allocate(day, period_id, section_id, course_code, class_id):
@@ -758,7 +771,16 @@ def generate_timetable(db_connector: Connection, cursor: Cursor,
 
 								day, period_id = class_day_period[_cls_idx][1]
 								classes = class_day_period[_cls_idx][0][:no_of_sections]
+								classes = class_day_period[_cls_idx][0][:no_of_sections]
 								for idx, section_id in enumerate(_section_ids):
+									fsc = fetch_data.get_faculty_section_courses(cursor, section_id=section_id, course_code=course[0])[:no_of_sections]
+									for _fsc, class_id in zip(sorted(fsc, key=lambda x: x["id"]), classes):
+										insert_data.add_timetable(db_connector,
+																  cursor,
+																  day=day,
+																  period_id=period_id,
+																  faculty_section_course_id=_fsc["id"],
+																  class_id=class_id)
 									fsc = fetch_data.get_faculty_section_courses(cursor, section_id=section_id, course_code=course[0])[:no_of_sections]
 									for _fsc, class_id in zip(sorted(fsc, key=lambda x: x["id"]), classes):
 										insert_data.add_timetable(db_connector,
@@ -950,6 +972,7 @@ def generate_timetable(db_connector: Connection, cursor: Cursor,
 					print(f"Error {section_id} {day}{period_id} {fc["faculty_id"]}, {fc["id"]} {fc["course_code"]}: {exception}{no_of_students}")
 					continue
 			db_connector.commit()
+			db_connector.commit()
 
 	# 3. Allocate non-elective, non-lab hrs
 	for section in sections:
@@ -972,6 +995,7 @@ def generate_timetable(db_connector: Connection, cursor: Cursor,
 		print(section)
 		for fc in faculty_courses:
 			course = fetch_data.get_course(cursor, code=fc["course_code"])
+			if not course or fetch_data.is_elective(cursor, course_code=fc["course_code"], section_id=section["id"]):
 			if not course or fetch_data.is_elective(cursor, course_code=fc["course_code"], section_id=section["id"]):
 				continue
 			hrs = course["L"] + course["T"]
@@ -1008,5 +1032,7 @@ def generate_timetable(db_connector: Connection, cursor: Cursor,
 						periods.pop(idx)
 					print(f"Error {section["id"]},{day}{period_id} {fc["faculty_id"]}, {fc["id"]} {fc["course_code"]}: {exception}")
 					continue
+			print("Success")
+			db_connector.commit()
 			print("Success")
 			db_connector.commit()

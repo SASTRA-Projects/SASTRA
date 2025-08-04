@@ -1,0 +1,77 @@
+{% extends "layout.html" %}
+
+{% block head %}
+    <meta name="description" content="Shows years for selected degree and stream.">
+    <style>
+        .year-button {
+            display: inline-block;
+            width: 322px;
+            height: 122px;
+            line-height: 122px;
+            text-align: center;
+            font-size: 1.5rem;
+            text-decoration: none;
+            background-color: var(--menu-footer-bg-dark);
+            color: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 10px rgba(26, 145, 197, 0.5);
+            transition: all 0.3s ease;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 10px;
+        }
+
+        .year-button:hover {
+            background-color: var(--accent-dark);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(26, 145, 197, 0.65);
+        }
+
+        .year-button:active {
+            transform: scale(0.98);
+        }
+
+        [data-theme="light"] .year-button {
+            background-color: var(--accent);
+            color: white;
+        }
+
+        .btn-container {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 20px;
+            margin-top:   1rem;
+            margin-bottom:3rem; /* Added margin for footer */
+        }
+
+        .year-title {
+            text-align: center;
+            font-size: 2.2em;
+            margin-top: 0.8rem;
+            margin-bottom: 1rem;
+        }
+
+        .course-count {
+            display: block;
+            font-size: 0.9em;
+            margin-top: 5px;
+            color: #ccc;
+        }
+
+        [data-theme="light"] .course-count {
+            color: white;
+        }
+    </style>
+{% endblock %}
+
+{% block title %}{{ degree }} - {{ stream }}{% endblock %}
+
+{% block content %}
+    <h1 class="year-title">{{ degree }} - {{ stream }} - {{ campus }}</h1>
+
+    <div class="btn-container">
+        {% for y in years %}
+            <a href="{{ url_for('show_sections', degree=degree, stream=stream, year=y, campus=campus) }}" class="year-button">Year-{{ y }}</a>
+        {% endfor %}
+    </div>
+{% endblock %}

@@ -160,6 +160,15 @@ def get_course(cursor: Cursor, /, *,
                    WHERE `code`=%s""", (code,))
     return cursor.fetchone()
 
+def get_programme_campuses(cursor, degree: str, stream: str):
+    cursor.execute("""
+        SELECT DISTINCT campuses.name
+        FROM programmes
+        JOIN campuses ON programmes.campus_id = campuses.id
+        WHERE programmes.degree = %s AND programmes.stream = %s
+    """, (degree, stream))
+    return [row[0] for row in cursor.fetchall()]
+
 def get_programme_courses(cursor: Cursor, /, *,
                           campus_id: Optional[int] = None,
                           programme_id: Optional[int] = None,

@@ -1,5 +1,7 @@
 {% extends "layout.html" %}
 
+{% block title %}Select Campus{% endblock %}
+
 {% block head %}
 <meta name="description" content="Shows all the campuses. Click any Campus name to display the Schools inside it.">
 <style>
@@ -19,11 +21,11 @@
         box-shadow: var(--shadow);
         padding: 1.5rem;
         text-align: center;
-        transition: transform 0.3s ease;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        height: 100%;
+    }
+
+    .course-table th {
+        background-color: var(--menu-footer-bg-dark);
+        color: white;
     }
 
     [data-theme="dark"] .grid-item {
@@ -48,8 +50,6 @@
 </style>
 {% endblock %}
 
-{% block title %}SASTRA Campuses{% endblock %}
-
 {% block content %}
 {% if not campuses %}
     <h1>No Campus Found!</h1>
@@ -57,8 +57,12 @@
     <h1>Campuses</h1>
     <div class="grid-list">
         {% for campus in campuses %}
-        <div class="grid-item">
-            <a href="/campus/{{ campus.name }}">{{ campus.name }}</a>
+        <div class="center-single">
+            {% if degree and stream and programme_id is not none %}
+                <a class="button-link" href="/programme/{{ degree }}/{{ stream }}/{{campus.name}}">{{ campus.name }}</a>
+            {% else %}
+                <a class="button-link" href="/campus/{{ campus.name }}">{{ campus.name }}</a>
+            {% endif %}
         </div>
         {% endfor %}
     </div>

@@ -37,7 +37,6 @@ def login() -> Union[Response, str]:
 			return redirect(url_for("index"))
 		else:
 			return render_template("login.html", user="User", auth="/login", role="User")
-
 	elif request.form.get("user") and request.form.get("password"):
 		try:
 			sql.connect(user=request.form["user"], password=request.form["password"])
@@ -146,6 +145,81 @@ def show_courses(degree: str, stream: str) -> str:
 		return render_template("course.html", courses=courses, degree=degree, stream=stream)
 	return render_template("failed.html", reason="Unknown error occurred")
 
+@app.route("/programme/<string:degree>/<string:stream>/<string:campus>")
+def show_years(degree: str, stream: str, campus: str) -> str:
+	if sql.cursor:
+		duration = show_data.get_degree_duration(sql.cursor, degree=degree)
+		if duration is None:
+			return render_template("failed.html", reason="Invalid Degree or Duration not found")
+		years = list(range(1, duration + 1))
+		return render_template("year.html", degree=degree, stream=stream, campus=campus, years=years)
+	return render_template("failed.html", reason="Unknown error occurred")
+
+@app.route("/programme/<degree>/<stream>/<year>/<campus>")
+def show_sections(degree, stream, year, campus):
+    try:
+        
+        campus_id = show_data.get_campus_id(sql.cursor, campus=campus)        
+        sections = fetch_data.get_sections(
+            sql.cursor,
+            degree=degree,
+            stream=stream,
+            campus_id=campus_id,
+            year=year
+        )
+        return render_template(
+            "section.html",
+            sections=sections,
+            degree=degree,
+            stream=stream,
+            year=year,
+            campus=campus
+        )
+    except Exception as e:
+        return f"An error occurred: {e}", 500
+	
+def show_timetables(section_id: int) -> str:
+	if sql.cursor:
+		periods= fetch_data.get_periods(sql.cursor)
+		section = fetch_data.get_section(sql.cursor, section_id=section_id)
+		campus = show_data.get_campus_name(sql.cursor, id=section["campus_id"])
+		title = f"{campus}-{section['degree']} {section['stream'] or ''} {section['section']} (Year {section['year']})"
+		for period in periods:
+			period["time_range"] = f"{period['start_time']}-{period['end_time']}"
+		grid = {day: {period["id"]: "" for period in periods} for day in DAYS}
+		timetables = fetch_data.get_timetables(sql.cursor, section_id=section_id)
+		for row in timetables:
+			day = row["day"]
+			period_id = row["period_id"]
+			content = f"{row['course_code']}-{row['faculty_id']}({row['room_no']})"
+			if row["is_lab"]:
+				content += "(Lab)"
+			if content:
+				if grid[day][period_id]:
+					grid[day][period_id] += "/"
+				grid[day][period_id] += content
+
+		course_data = {}
+		for fc in timetables:
+			faculty = fetch_data.get_faculty(sql.cursor, id=fc["faculty_id"])["name"]
+			course_code = fc["course_code"]
+			course = fetch_data.get_course(sql.cursor, code=course_code)
+			if course_code not in course_data:
+				course_data[course_code] = {
+					"name": course["name"],
+					"faculties": set(),
+					"credits": course["credits"],
+					"L": course["L"],
+					"P": course["P"],
+					"T": course["T"],
+				}
+			course_data[course_code]["faculties"].add(f"{faculty}({fc['faculty_id']})")
+
+		for course in course_data.values():
+			course["faculties"] = ", ".join(course["faculties"])
+		return render_template("timetable.html", days=DAYS, periods=periods, grid=grid, course_data=course_data, title=title)
+	return render_template("failed.html", reason="Unknown error occurred")	
+
 @app.route("/faculty/details")
 def show_faculty_details() -> str:
 	if sql.cursor:
@@ -248,7 +322,6 @@ def show_timetables(section_id: int) -> str:
 @app.errorhandler(404)
 def page_not_found(error: NotFound) -> tuple[str, int]:
 	return (render_template("404.html"), 404)
-
 
 if __name__ == "__main__":
 	app.config.update(
